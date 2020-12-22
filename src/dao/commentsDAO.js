@@ -49,13 +49,13 @@ export default class CommentsDAO {
       let commentDoc = {
         name: user.name,
         email: user.email,
-        movie_id: movieId,
+        movie_id: ObjectId(movieId),
         text: comment,
         date: date,
       }
       console.log(commentDoc)
 
-      return await comments.insertOne({ commentDoc })
+      return await comments.insertOne(commentDoc)
     } catch (e) {
       console.error(`Unable to post comment: ${e}`)
       return { error: e }
@@ -78,8 +78,8 @@ export default class CommentsDAO {
       // Use the commentId and userEmail to select the proper comment, then
       // update the "text" and "date" fields of the selected comment.
       const updateResponse = await comments.updateOne(
-        { someField: "someValue" },
-        { $set: { someOtherField: "someOtherValue" } },
+        { _id: ObjectId(commentId), email: userEmail },
+        { $set: { text, date } },
       )
 
       return updateResponse
