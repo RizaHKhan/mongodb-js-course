@@ -42,12 +42,20 @@ export default class CommentsDAO {
    * @returns {DAOResponse} Returns an object with either DB response or "error"
    */
   static async addComment(movieId, user, comment, date) {
+    console.log("comment added", movieId)
     try {
       // TODO Ticket: Create/Update Comments
       // Construct the comment document to be inserted into MongoDB.
-      const commentDoc = { someField: "someValue" }
+      let commentDoc = {
+        name: user.name,
+        email: user.email,
+        movie_id: movieId,
+        text: comment,
+        date: date,
+      }
+      console.log(commentDoc)
 
-      return await comments.insertOne(commentDoc)
+      return await comments.insertOne({ commentDoc })
     } catch (e) {
       console.error(`Unable to post comment: ${e}`)
       return { error: e }

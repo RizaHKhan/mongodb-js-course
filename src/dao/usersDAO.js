@@ -60,14 +60,7 @@ export default class UsersDAO {
       // Insert a user with the "name", "email", and "password" fields.
       // TODO Ticket: Durable Writes
       // Use a more durable Write Concern for this operation.
-      await users.insertOne(
-        {
-          email: userInfo.email,
-          password: userInfo.password,
-          name: userInfo.name,
-        },
-        { w: 2 },
-      )
+      await users.insertOne({ ...userInfo })
       return { success: true }
     } catch (e) {
       if (String(e).startsWith("MongoError: E11000 duplicate key error")) {
@@ -96,7 +89,7 @@ export default class UsersDAO {
             jwt,
           },
         },
-        { $upsert: true },
+        { upsert: true },
       )
       return { success: true }
     } catch (e) {
@@ -114,7 +107,7 @@ export default class UsersDAO {
     try {
       // TODO Ticket: User Management
       // Delete the document in the `sessions` collection matching the email.
-      await sessions.deleteOne({ email })
+      await sessions.deleteOne({ user_id: email })
       return { success: true }
     } catch (e) {
       console.error(`Error occurred while logging out user, ${e}`)
